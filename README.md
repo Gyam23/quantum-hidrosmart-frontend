@@ -1,2 +1,2 @@
 # quantum-hidrosmart-frontend
-MVP do projeto Quantum HidroSmart – Inovação Tecnológica, FACAPE
+Frontend do MVP do projeto Quantum HidroSmart – Inovação Tecnológica, FACAPE
