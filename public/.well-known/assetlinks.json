@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.quantumhidrosmart.app",
+      "sha256_cert_fingerprints": [
+        "D6:AD:D8:CE:EA:41:CB:E6:71:82:6E:6C:9C:75:43:90:4C:18:92:4C:79:04:BB:18:C8:A2:4E:1B:AE:58:10:B3"
+      ]
+    }
+  }
+]
