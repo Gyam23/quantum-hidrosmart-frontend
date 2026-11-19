@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 
 const LocationPicker = dynamic(() => import("@/components/LocationPicker"), {
   ssr: false,
-  loading: () => <div className="h-64 animate-pulse rounded-lg bg-slate-100" />,
+  loading: () => <div className="h-64 animate-pulse rounded-lg bg-skeleton" />,
 });
 
 export default function CitizenReportPage() {
@@ -98,7 +98,7 @@ export default function CitizenReportPage() {
           <p className="mt-1 text-xs text-muted">JPEG, PNG ou WebP, até 5 MB.</p>
         </div>
         {error && <p role="alert" className="rounded-lg bg-danger/10 p-3 text-sm text-danger">{error}</p>}
-        <button type="submit" disabled={submitting} className="h-12 w-full rounded-lg bg-brand font-semibold text-white hover:bg-brand-dark disabled:opacity-60">
+        <button type="submit" disabled={submitting} className="h-12 w-full rounded-lg bg-action font-semibold text-white hover:bg-action-hover disabled:opacity-60">
           {submitting ? "ENVIANDO..." : "ENVIAR DENÚNCIA"}
         </button>
       </form>

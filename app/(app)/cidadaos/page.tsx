@@ -58,7 +58,7 @@ export default function CitizenReportsPage() {
               <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold">{report.address || `${report.latitude.toFixed(5)}, ${report.longitude.toFixed(5)}`}</h3><span className="rounded bg-brand-soft px-2 py-1 text-xs font-semibold text-brand-dark">{statusLabel[report.status]}</span></div>
               <p className="mt-2 text-sm text-muted">{report.description}</p>
               <p className="mt-2 text-xs text-muted">Denúncia #{report.id} · {new Date(report.created_at).toLocaleString("pt-BR")}{report.duplicate_of_id ? ` · Agrupada com #${report.duplicate_of_id}` : ""}</p>
-              {report.status === "received" && <button disabled={loadingId === report.id} onClick={() => validate(report.id)} className="mt-4 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{loadingId === report.id ? "Validando..." : "Validar e gerar alerta"}</button>}
+              {report.status === "received" && <button disabled={loadingId === report.id} onClick={() => validate(report.id)} className="mt-4 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{loadingId === report.id ? "Validando..." : "Validar e gerar alerta"}</button>}
             </div>
           </article>
         ))}

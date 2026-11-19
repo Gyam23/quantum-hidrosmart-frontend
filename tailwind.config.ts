@@ -4,8 +4,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: { DEFAULT: "#1E6FBA", dark: "#0B4A8F", navy: "#16335C", sky: "#38B6FF", soft: "#EDF2FA" },
-        ink: "#0F172A", muted: "#5B6B82", line: "#E3E8F0", surface: "#F6F8FB", danger: "#E5604D", warn: "#F59E0B",
+        brand: { DEFAULT: "rgb(var(--brand) / <alpha-value>)", dark: "rgb(var(--brand-dark) / <alpha-value>)", navy: "#16335C", sky: "#38B6FF", soft: "rgb(var(--brand-soft) / <alpha-value>)" },
+        action: "#1E6FBA",
+        "action-hover": "#0B4A8F",
+        ink: "rgb(var(--ink) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        line: "rgb(var(--line) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        card: "rgb(var(--card) / <alpha-value>)",
+        skeleton: "rgb(var(--skeleton) / <alpha-value>)",
+        danger: "rgb(var(--danger) / <alpha-value>)",
+        warn: "rgb(var(--warn) / <alpha-value>)",
       },
       fontFamily: { display: ["var(--font-display)", "serif"], sans: ["var(--font-body)", "system-ui", "sans-serif"] },
     },

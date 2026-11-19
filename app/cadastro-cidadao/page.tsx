@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, apiRequest, login, User } from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function CitizenRegistrationPage() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function CitizenRegistrationPage() {
 
   return (
     <main className="grid min-h-screen place-items-center px-5 py-8">
+      <ThemeToggle className="fixed right-4 top-4 z-50" />
       <form onSubmit={submit} className="card w-full max-w-lg space-y-5 p-6 sm:p-8">
         <Link href="/" className="text-sm font-semibold text-brand">← Voltar ao login</Link>
         <div><h1 className="h-display mt-4 text-3xl">Conta de cidadão</h1><p className="mt-2 text-sm text-muted">Cadastre-se para reportar vazamentos e acompanhar as atualizações.</p></div>
@@ -45,7 +47,7 @@ export default function CitizenRegistrationPage() {
           <span>Concordo com o uso dos meus dados de contato, localização e denúncia para o atendimento do serviço, conforme a LGPD.</span>
         </label>
         {error && <p role="alert" className="rounded-lg bg-danger/10 p-3 text-sm text-danger">{error}</p>}
-        <button type="submit" disabled={submitting} className="h-12 w-full rounded-lg bg-brand font-semibold text-white hover:bg-brand-dark disabled:opacity-60">{submitting ? "CRIANDO CONTA..." : "CRIAR CONTA"}</button>
+        <button type="submit" disabled={submitting} className="h-12 w-full rounded-lg bg-action font-semibold text-white hover:bg-action-hover disabled:opacity-60">{submitting ? "CRIANDO CONTA..." : "CRIAR CONTA"}</button>
       </form>
     </main>
   );

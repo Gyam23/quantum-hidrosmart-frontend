@@ -5,6 +5,61 @@
 html, body { height: 100%; }
 body { @apply bg-surface font-sans text-ink antialiased; }
 @layer components {
-  .card { @apply rounded-xl border border-line bg-white; }
+  .card { @apply rounded-xl border border-line bg-card; }
   .h-display { @apply font-display font-bold text-brand-dark; }
+}
+
+:root {
+  color-scheme: light;
+  --brand: 30 111 186;
+  --brand-dark: 11 74 143;
+  --brand-soft: 237 242 250;
+  --ink: 15 23 42;
+  --muted: 91 107 130;
+  --line: 227 232 240;
+  --surface: 246 248 251;
+  --card: 255 255 255;
+  --skeleton: 241 245 249;
+  --danger: 229 96 77;
+  --warn: 245 158 11;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --brand: 96 165 250;
+  --brand-dark: 147 197 253;
+  --brand-soft: 30 58 86;
+  --ink: 226 232 240;
+  --muted: 148 163 184;
+  --line: 51 65 85;
+  --surface: 15 23 42;
+  --card: 30 41 59;
+  --skeleton: 51 65 85;
+  --danger: 248 113 113;
+  --warn: 251 191 36;
+}
+
+@layer base {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    @apply bg-card text-ink;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted;
+  }
+}
+
+:root[data-theme="dark"] .leaflet-popup-content-wrapper,
+:root[data-theme="dark"] .leaflet-popup-tip,
+:root[data-theme="dark"] .leaflet-control-zoom a {
+  background-color: rgb(var(--card));
+  color: rgb(var(--ink));
+}
+
+:root[data-theme="dark"] .leaflet-control-attribution {
+  background-color: rgb(var(--card) / 0.8);
+  color: rgb(var(--ink));
 }

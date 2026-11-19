@@ -70,7 +70,7 @@ export default function ImpactReportsPage() {
               <label className="text-sm font-semibold">Localidade<input required maxLength={120} value={baseline.neighborhood} onChange={(event) => setBaseline({ ...baseline, neighborhood: event.target.value })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
               <label className="text-sm font-semibold">Baseline de perdas (litros/mês)<input required type="number" min="0" step="any" value={baseline.monthly_loss_liters} onChange={(event) => setBaseline({ ...baseline, monthly_loss_liters: Number(event.target.value) })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
               <label className="text-sm font-semibold">Tarifa (R$/m³)<input required type="number" min="0" step="any" value={baseline.tariff_per_m3} onChange={(event) => setBaseline({ ...baseline, tariff_per_m3: Number(event.target.value) })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
-              <button className="rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark sm:col-span-3 sm:justify-self-end">Salvar baseline</button>
+              <button className="rounded-lg bg-action px-5 py-3 text-sm font-semibold text-white hover:bg-action-hover sm:col-span-3 sm:justify-self-end">Salvar baseline</button>
             </form>
           )}
         </section>

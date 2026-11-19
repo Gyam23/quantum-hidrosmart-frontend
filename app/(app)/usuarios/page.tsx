@@ -51,10 +51,10 @@ export default function UsersPage() {
           <label className="block text-sm font-semibold">Nome<input required minLength={2} maxLength={120} value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
           <label className="block text-sm font-semibold">E-mail<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
           <label className="block text-sm font-semibold">Senha inicial<input required type="password" minLength={10} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
-          <label className="block text-sm font-semibold">Perfil<select value={role} onChange={(event) => setRole(event.target.value as Exclude<UserRole, "citizen">)} className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 font-normal"><option value="operator">Operador</option><option value="admin">Admin/Gestor</option></select></label>
+          <label className="block text-sm font-semibold">Perfil<select value={role} onChange={(event) => setRole(event.target.value as Exclude<UserRole, "citizen">)} className="mt-2 h-10 w-full rounded-lg border border-line bg-card px-3 font-normal"><option value="operator">Operador</option><option value="admin">Admin/Gestor</option></select></label>
           {error && <p role="alert" className="text-sm text-danger">{error}</p>}
           {message && <p role="status" className="text-sm text-brand">{message}</p>}
-          <button className="h-11 w-full rounded-lg bg-brand font-semibold text-white">Criar usuário</button>
+          <button className="h-11 w-full rounded-lg bg-action font-semibold text-white">Criar usuário</button>
         </form>
         <section className="card p-6">
           <h2 className="h-display text-lg">Usuários cadastrados</h2>

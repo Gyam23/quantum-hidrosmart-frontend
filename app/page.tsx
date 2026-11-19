@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Droplet, User, ShieldCheck, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { ApiError, login } from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,7 +31,8 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen">
-      <section className="hidden w-[44%] flex-col bg-gradient-to-b from-brand-dark to-brand-navy px-[58px] py-[58px] lg:flex">
+      <ThemeToggle className="fixed right-4 top-4 z-50" />
+      <section className="hidden w-[44%] flex-col bg-gradient-to-b from-action-hover to-brand-navy px-[58px] py-[58px] lg:flex">
         <div className="flex items-center gap-4">
           <div className="grid h-[46px] w-[46px] place-items-center rounded-full bg-white"><Droplet className="h-5 w-5 fill-sky-300 text-sky-500" /></div>
           <div className="leading-tight"><p className="text-[18px] font-bold tracking-wide text-white">QUANTUM</p><p className="text-[11px] font-semibold tracking-wider text-sky-200">HIDROSMART</p></div>
@@ -42,7 +44,7 @@ export default function LoginPage() {
         </div>
       </section>
 
-      <section className="flex flex-1 items-center justify-center bg-white px-6">
+      <section className="flex flex-1 items-center justify-center bg-card px-6">
         <form onSubmit={submit} className="w-full max-w-[405px]">
           <h2 className="h-display text-[32px] leading-[1.25]">Bem-vindo ao Quantum HidroSmart</h2>
           <p className="mt-3 text-sm text-muted">Entre para acessar o painel ou acompanhar sua denúncia.</p>
@@ -61,7 +63,7 @@ export default function LoginPage() {
           </div>
 
           {error && <p role="alert" className="mt-3 rounded-lg bg-danger/10 p-3 text-sm text-danger">{error}</p>}
-          <button type="submit" disabled={submitting} className="mt-6 h-12 w-full rounded-lg bg-brand text-sm font-bold tracking-wider text-white transition hover:bg-brand-dark disabled:opacity-60">
+          <button type="submit" disabled={submitting} className="mt-6 h-12 w-full rounded-lg bg-action text-sm font-bold tracking-wider text-white transition hover:bg-action-hover disabled:opacity-60">
             {submitting ? "ENTRANDO..." : "ENTRAR"}
           </button>
           <p className="mt-5 flex items-center justify-center gap-2 text-xs text-muted"><CheckCircle2 className="h-4 w-4" />Acesso municipal restrito a usuários autorizados.</p>

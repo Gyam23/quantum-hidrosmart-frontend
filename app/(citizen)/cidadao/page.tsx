@@ -25,7 +25,7 @@ export default function CitizenHomePage() {
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div><h1 className="h-display text-3xl">Minhas denúncias</h1><p className="mt-2 text-sm text-muted">Acompanhe o andamento dos vazamentos que você reportou.</p></div>
-        <Link href="/cidadao/denunciar" className="rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark">Nova denúncia</Link>
+        <Link href="/cidadao/denunciar" className="rounded-lg bg-action px-5 py-3 text-sm font-semibold text-white hover:bg-action-hover">Nova denúncia</Link>
       </div>
       {error && <p role="alert" className="mt-6 rounded-lg bg-danger/10 p-4 text-sm text-danger">{error}</p>}
       <section className="mt-6 space-y-4">

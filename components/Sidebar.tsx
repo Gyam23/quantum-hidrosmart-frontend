@@ -40,7 +40,7 @@ export default function Sidebar() {
         {visibleItems.map(({ href, label, icon: Icon }) => {
           const active = path === href;
           return (
-            <Link key={href} href={href} className={`flex h-10 items-center gap-3 rounded-lg px-3 text-sm ${active ? "bg-white font-semibold text-brand-dark shadow-sm" : "text-ink hover:bg-white/60"}`}>
+            <Link key={href} href={href} className={`flex h-10 items-center gap-3 rounded-lg px-3 text-sm ${active ? "bg-card font-semibold text-brand-dark shadow-sm" : "text-ink hover:bg-card/60"}`}>
               <Icon className={`h-[18px] w-[18px] ${active ? "text-brand" : "text-muted"}`} />
               <span className="flex-1">{label}</span>
             </Link>
@@ -49,12 +49,12 @@ export default function Sidebar() {
       </nav>
       <Link
         href="/alterar-senha"
-        className={`mt-auto flex items-center gap-3 rounded-lg border bg-white p-2.5 transition hover:border-brand ${senhaAtiva ? "border-brand" : "border-line"}`}
+        className={`mt-auto flex items-center gap-3 rounded-lg border bg-card p-2.5 transition hover:border-brand ${senhaAtiva ? "border-brand" : "border-line"}`}
       >
-        <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-brand text-[11px] font-bold text-white">{user?.name.slice(0, 2).toUpperCase() ?? "QH"}</span>
+        <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-action text-[11px] font-bold text-white">{user?.name.slice(0, 2).toUpperCase() ?? "QH"}</span>
         <div className="min-w-0 flex-1 leading-tight"><p className="truncate text-xs font-semibold">{user?.name ?? "Usuário"}</p><p className="text-[11px] text-muted">{user?.role === "admin" ? "Gestor" : "Operador"}</p></div>
       </Link>
-      <button onClick={logout} className="mt-3 flex items-center gap-3 rounded-lg px-3 py-2 text-left text-xs font-semibold text-muted hover:bg-white">
+      <button onClick={logout} className="mt-3 flex items-center gap-3 rounded-lg px-3 py-2 text-left text-xs font-semibold text-muted hover:bg-card">
         <LogOut className="h-4 w-4" /> Sair
       </button>
     </aside>

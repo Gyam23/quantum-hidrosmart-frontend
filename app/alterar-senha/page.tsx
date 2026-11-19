@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProtectedArea from "@/components/ProtectedArea";
 import { apiRequest, clearSession } from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function ChangePasswordForm() {
   const router = useRouter();
@@ -32,6 +33,7 @@ function ChangePasswordForm() {
 
   return (
     <main className="grid min-h-screen place-items-center px-5 py-8">
+      <ThemeToggle className="fixed right-4 top-4 z-50" />
       <form onSubmit={submit} className="card w-full max-w-md space-y-5 p-7">
         <Link href="/visao-geral" className="text-sm font-semibold text-brand">← Voltar ao painel</Link>
         <div><h1 className="h-display mt-4 text-3xl">Alterar senha</h1><p className="mt-2 text-sm text-muted">Confirme sua senha atual e escolha uma nova senha.</p></div>
@@ -39,7 +41,7 @@ function ChangePasswordForm() {
         <label className="block text-sm font-semibold">Nova senha<input required type="password" minLength={10} maxLength={128} autoComplete="new-password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} className="mt-2 h-11 w-full rounded-lg border border-line px-3 font-normal" /><span className="mt-1 block text-xs font-normal text-muted">Mínimo de 10 caracteres.</span></label>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {message && <p role="status" className="text-sm text-brand">{message}</p>}
-        <button className="h-11 w-full rounded-lg bg-brand font-semibold text-white">Alterar senha</button>
+        <button className="h-11 w-full rounded-lg bg-action font-semibold text-white">Alterar senha</button>
       </form>
     </main>
   );

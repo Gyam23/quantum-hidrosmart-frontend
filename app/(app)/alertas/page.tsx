@@ -84,14 +84,14 @@ export default function AlertsPage() {
                 {!order && alert.status === "open" && (
                   <form onSubmit={(event) => openOrder(event, alert.id)} className="mt-4 flex flex-wrap gap-2">
                     <input value={responsible[alert.id] ?? ""} onChange={(event) => setResponsible((current) => ({ ...current, [alert.id]: event.target.value }))} maxLength={120} placeholder="Responsável pela equipe (opcional)" className="h-10 min-w-56 flex-1 rounded-lg border border-line px-3 text-sm" />
-                    <button className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark">Abrir ordem de serviço</button>
+                    <button className="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-white hover:bg-action-hover">Abrir ordem de serviço</button>
                   </form>
                 )}
                 {order && (
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface p-3">
                     <div className="text-sm"><p className="font-semibold">OS #{order.id}{order.responsible_name ? ` · ${order.responsible_name}` : ""}</p><p className="text-xs text-muted">Status: {statusLabel[order.status]}</p>{order.resolution_notes && <p className="mt-1 text-xs text-muted">{order.resolution_notes}</p>}</div>
-                    {order.status === "open" && <button onClick={() => updateOrder(order, "in_repair")} className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white">Iniciar reparo</button>}
-                    {order.status === "in_repair" && <button onClick={() => updateOrder(order, "resolved")} className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white">Marcar como resolvido</button>}
+                    {order.status === "open" && <button onClick={() => updateOrder(order, "in_repair")} className="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-white">Iniciar reparo</button>}
+                    {order.status === "in_repair" && <button onClick={() => updateOrder(order, "resolved")} className="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-white">Marcar como resolvido</button>}
                   </div>
                 )}
               </article>

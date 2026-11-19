@@ -20,7 +20,7 @@ export default function ProtectedImage({ path, alt, className }: { path: string;
     };
   }, [path]);
 
-  if (failed) return <div role="status" className={`${className} grid place-items-center bg-slate-100 p-2 text-center text-xs text-muted`}>Foto indisponível</div>;
-  if (!src) return <div aria-label="Carregando foto" className={`${className} animate-pulse bg-slate-100`} />;
+  if (failed) return <div role="status" className={`${className} grid place-items-center bg-skeleton p-2 text-center text-xs text-muted`}>Foto indisponível</div>;
+  if (!src) return <div aria-label="Carregando foto" className={`${className} animate-pulse bg-skeleton`} />;
   return <img src={src} alt={alt} className={className} />;
 }

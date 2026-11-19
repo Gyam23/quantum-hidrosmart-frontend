@@ -57,7 +57,7 @@ export default function ImportReadingsPage() {
           <button type="button" onClick={downloadExample} className="mt-4 text-sm font-semibold text-brand">Baixar CSV de exemplo</button>
           <form onSubmit={submit} className="mt-6 space-y-4">
             <label className="block text-sm font-semibold">Arquivo CSV<input required type="file" accept=".csv,text/csv" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-lg border border-line p-3 text-sm text-muted" /></label>
-            <button type="submit" disabled={!file || submitting} className="h-11 rounded-lg bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60">{submitting ? "VALIDANDO..." : "VALIDAR E IMPORTAR"}</button>
+            <button type="submit" disabled={!file || submitting} className="h-11 rounded-lg bg-action px-5 text-sm font-semibold text-white hover:bg-action-hover disabled:opacity-60">{submitting ? "VALIDANDO..." : "VALIDAR E IMPORTAR"}</button>
           </form>
           {error && <p role="alert" className="mt-4 rounded-lg bg-danger/10 p-4 text-sm text-danger">{error}</p>}
           {result && (
