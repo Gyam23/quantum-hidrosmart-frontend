@@ -1,57 +1,68 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import Fab from "@/components/Fab";
+import { apiRequest, CitizenReport } from "@/lib/api";
+import ProtectedImage from "@/components/ProtectedImage";
 
-const ranking: [string, number, number][] = [["Centro", 42, 98], ["Areia Branca", 35, 92], ["Cohab Massangano", 31, 89], ["São José", 24, 81], ["Jardim Maravilha", 19, 76], ["Vila Eduardo", 14, 70], ["João de Deus", 11, 64], ["Gercino Coelho", 8, 58]];
-const reports = [
-  { i: "JM", n: "José Marcelo", w: "Há 12 min", s: "Aberta", d: "Vazamento volumoso no projeto N4, próximo ao cruzamento central. Água limpa escorrendo há horas." },
-  { i: "MC", n: "Maria Carmo", w: "Há 34 min", s: "Em análise", d: "Infiltração grave detectada no muro lateral público da Escola Municipal no Bairro José e Maria." },
-  { i: "CA", n: "Carlos", w: "Há 1h", s: "Em análise", d: "Tubulação rompida jorrando água na via pública do Bairro Areia Branca. Dificultando trânsito de pedestres." },
-  { i: "AL", n: "Ana Lima", w: "Há 3h", s: "Resolvida", d: "Flutuação severa de pressão e barulho estranho na rede de entrada do condomínio Atrás da Barca." },
-];
-const badge: Record<string, string> = { "Aberta": "bg-amber-50 text-amber-500", "Em análise": "bg-brand-soft text-brand", "Resolvida": "bg-slate-100 text-muted" };
+const statusLabel: Record<CitizenReport["status"], string> = {
+  received: "Aguardando validação",
+  validated: "Validada pela equipe",
+  resolved: "Resolvida",
+};
 
-export default function Page() {
+export default function CitizenReportsPage() {
+  const [reports, setReports] = useState<CitizenReport[]>([]);
+  const [error, setError] = useState("");
+  const [loadingId, setLoadingId] = useState<number | null>(null);
+
+  async function load() {
+    setReports(await apiRequest<CitizenReport[]>("/citizen-reports"));
+  }
+
+  useEffect(() => {
+    load().catch((requestError: Error) => setError(requestError.message));
+  }, []);
+
+  async function validate(reportId: number) {
+    setError("");
+    setLoadingId(reportId);
+    try {
+      await apiRequest(`/citizen-reports/${reportId}/validate`, {
+        method: "POST",
+        body: JSON.stringify({
+          severity: "medium",
+          title: "Vazamento reportado por cidadão",
+          estimated_flow_l_min: 0,
+        }),
+      });
+      await load();
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Não foi possível validar a denúncia.");
+    } finally {
+      setLoadingId(null);
+    }
+  }
+
   return (
     <>
       <PageHeader title="Cidadãos e Denúncias" icon="heart" />
-      <div className="flex-1 px-8 pt-6">
-        <div className="border-b border-line"><span className="inline-block border-b-2 border-brand px-1 pb-2.5 text-sm font-semibold text-brand">Painel Municipal</span></div>
-        <div className="mt-6 grid items-start gap-5 lg:grid-cols-[1fr_463px]">
-          <section className="card p-6">
-            <h2 className="h-display text-lg">Ranking de Bairros por Engajamento</h2>
-            <p className="mb-4 mt-1 text-[13px] text-muted">Análise com base em denúncias reportadas e resoluções colaborativas</p>
-            <table className="w-full text-sm">
-              <thead><tr className="bg-surface text-xs font-semibold text-muted"><th className="w-14 px-4 py-3 text-left">#</th><th className="text-left">Bairro</th><th className="text-right">Denúncias</th><th className="px-4 text-right">Score Geral</th></tr></thead>
-              <tbody>
-                {ranking.map(([b, d, s], i) => (
-                  <tr key={b} className={`border-b border-line ${i < 3 ? "bg-brand-soft/50" : ""}`}>
-                    <td className={`px-4 py-3.5 ${i < 3 ? "font-semibold text-brand" : ""}`}>{i + 1}</td>
-                    <td className={i < 3 ? "font-semibold" : ""}>{b}</td>
-                    <td className="text-right">{d}</td>
-                    <td className="px-4 text-right"><span className={`inline-block min-w-[32px] rounded px-2 py-0.5 text-center text-xs font-bold ${i < 3 ? "bg-brand text-white" : "bg-slate-100 text-muted"}`}>{s}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-          <section className="card p-6">
-            <h2 className="h-display mb-4 text-lg">Denúncias Recentes</h2>
-            <div className="space-y-3">
-              {reports.map((r) => (
-                <article key={r.n} className="rounded-lg border border-line p-4">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-brand text-[11px] font-bold text-white">{r.i}</span>
-                    <div className="flex-1 leading-tight"><p className="text-sm font-bold">{r.n}</p><p className="text-[11px] text-muted">{r.w}</p></div>
-                    <span className={`rounded px-2 py-1 text-[11px] font-semibold ${badge[r.s]}`}>{r.s}</span>
-                  </div>
-                  <p className="mt-3 text-[13px] leading-relaxed text-muted">{r.d}</p>
-                </article>
-              ))}
+      <main className="flex-1 space-y-4 p-8">
+        <div><h2 className="h-display text-lg">Denúncias recebidas</h2><p className="mt-1 text-sm text-muted">Denúncias próximas são agrupadas; valide para criar um alerta operacional.</p></div>
+        {error && <p role="alert" className="rounded-lg bg-danger/10 p-4 text-sm text-danger">{error}</p>}
+        {reports.length === 0 && !error && <div className="card p-5 text-sm text-muted">Nenhuma denúncia foi registrada.</div>}
+        {reports.map((report) => (
+          <article key={report.id} className="card flex flex-col gap-4 p-5 sm:flex-row">
+            {report.photo_url && <ProtectedImage path={report.photo_url} alt="Foto enviada pelo cidadão" className="h-32 w-full rounded-lg object-cover sm:w-40" />}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold">{report.address || `${report.latitude.toFixed(5)}, ${report.longitude.toFixed(5)}`}</h3><span className="rounded bg-brand-soft px-2 py-1 text-xs font-semibold text-brand-dark">{statusLabel[report.status]}</span></div>
+              <p className="mt-2 text-sm text-muted">{report.description}</p>
+              <p className="mt-2 text-xs text-muted">Denúncia #{report.id} · {new Date(report.created_at).toLocaleString("pt-BR")}{report.duplicate_of_id ? ` · Agrupada com #${report.duplicate_of_id}` : ""}</p>
+              {report.status === "received" && <button disabled={loadingId === report.id} onClick={() => validate(report.id)} className="mt-4 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{loadingId === report.id ? "Validando..." : "Validar e gerar alerta"}</button>}
             </div>
-          </section>
-        </div>
-      </div>
-      <Fab />
+          </article>
+        ))}
+      </main>
     </>
   );
 }

@@ -1,62 +1,80 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import { Download, TrendingDown } from "lucide-react";
+import { ApiError, apiRequest, getCurrentUser, ImpactReport, User } from "@/lib/api";
 
-const months = ["Mar", "Abr", "Mai", "Jun", "Jul", "Ago"];
-const antes = [680, 715, 780, 800, 690, 720];
-const atual = [450, 430, 460, 420, 415, 395];
+type Baseline = {
+  neighborhood: string;
+  monthly_loss_liters: number;
+  tariff_per_m3: number;
+};
 
-const Delta = ({ v }: { v: string }) => <span className="ml-3 inline-flex items-center gap-1 rounded bg-danger/10 px-1.5 py-0.5 text-[10px] font-semibold text-danger"><TrendingDown className="h-2.5 w-2.5" />{v}</span>;
+export default function ImpactReportsPage() {
+  const [impact, setImpact] = useState<ImpactReport | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [baseline, setBaseline] = useState<Baseline>({ neighborhood: "Petrolina", monthly_loss_liters: 0, tariff_per_m3: 0 });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-export default function Page() {
+  async function load() {
+    const [report, currentUser] = await Promise.all([
+      apiRequest<ImpactReport>("/reports/impact"),
+      getCurrentUser(),
+    ]);
+    setImpact(report);
+    setUser(currentUser);
+    try {
+      const savedBaseline = await apiRequest<Baseline>("/reports/baseline");
+      setBaseline(savedBaseline);
+    } catch (requestError) {
+      if (!(requestError instanceof ApiError) || requestError.status !== 404) throw requestError;
+    }
+  }
+
+  useEffect(() => {
+    load().catch((requestError: Error) => setError(requestError.message));
+  }, []);
+
+  async function saveBaseline(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setMessage("");
+    try {
+      await apiRequest("/reports/baseline", { method: "PUT", body: JSON.stringify(baseline) });
+      await load();
+      setMessage("Baseline operacional atualizada.");
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Não foi possível salvar a baseline.");
+    }
+  }
+
   return (
     <>
       <PageHeader title="Relatórios de Impacto" icon="heart" />
-      <div className="flex-1 space-y-5 p-8">
-        <h2 className="h-display text-lg">Comparativo de Desempenho Operacional</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <section className="card p-6">
-            <h3 className="flex items-center gap-3 font-display text-[17px] font-bold text-muted"><span className="h-2 w-2 rounded-full bg-slate-400" />Antes do HidroSmart (Média Histórica)</h3>
-            {[["Perdas na rede de distribuição", "52%"], ["Tempo médio de detecção", "18h"], ["Vazamentos ativos por mês", "47"]].map(([k, v]) => (
-              <div key={k} className="flex items-center justify-between border-b border-line py-4 last:border-0"><span className="text-sm text-muted">{k}</span><span className="text-2xl font-bold text-muted">{v}</span></div>
-            ))}
-          </section>
-          <section className="rounded-xl border-2 border-brand bg-white p-6">
-            <h3 className="flex items-center gap-3 font-display text-[17px] font-bold text-brand-dark"><span className="h-2 w-2 rounded-full bg-brand" />Com HidroSmart (Resultados Atuais)</h3>
-            {[["Perdas na rede de distribuição", "37%", "-15%", "text-danger"], ["Tempo médio de detecção", "2h 14min", "-87%", "text-brand"], ["Vazamentos ativos por mês", "12", "-74%", "text-danger"]].map(([k, v, d, c]) => (
-              <div key={k} className="flex items-center justify-between border-b border-line py-4 last:border-0"><span className="text-sm text-muted">{k}</span><span className="flex items-center"><span className={`text-2xl font-bold ${c}`}>{v}</span><Delta v={d} /></span></div>
-            ))}
-          </section>
-        </div>
-
+      <main className="flex-1 space-y-5 p-8">
+        <div><h2 className="h-display text-lg">Economia estimada no mês</h2><p className="mt-1 text-sm text-muted">A comparação usa a baseline manual e o volume estimado dos alertas registrados neste mês.</p></div>
+        {error && <p role="alert" className="rounded-lg bg-danger/10 p-4 text-sm text-danger">{error}</p>}
+        {message && <p role="status" className="rounded-lg bg-brand-soft p-4 text-sm text-brand-dark">{message}</p>}
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="card p-5"><p className="text-sm text-muted">Baseline mensal de perdas</p><p className="mt-3 text-2xl font-bold">{impact ? `${impact.baseline_liters.toLocaleString("pt-BR")} L` : "—"}</p></div>
+          <div className="card p-5"><p className="text-sm text-muted">Perdas estimadas no período</p><p className="mt-3 text-2xl font-bold text-danger">{impact ? `${impact.estimated_lost_liters.toLocaleString("pt-BR")} L` : "—"}</p></div>
+          <div className="card p-5"><p className="text-sm text-muted">Volume preservado estimado</p><p className="mt-3 text-2xl font-bold text-brand">{impact ? `${impact.estimated_saved_liters.toLocaleString("pt-BR")} L` : "—"}</p></div>
+          <div className="card p-5"><p className="text-sm text-muted">Economia financeira estimada</p><p className="mt-3 text-2xl font-bold text-brand">{impact ? impact.estimated_savings_brl.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—"}</p></div>
+        </section>
         <section className="card p-6">
-          <div className="flex items-start justify-between">
-            <div><h2 className="h-display text-lg">Evolução Mensal do Volume de Perdas Estimado (m³)</h2><p className="mt-1 text-[13px] text-muted">Comparativo histórico antes da implantação do sistema vs. cenário atual de monitoramento</p></div>
-            <div className="flex gap-4 text-xs text-muted"><span className="flex items-center gap-2"><i className="h-3 w-3 rounded-sm bg-slate-400" />Antes</span><span className="flex items-center gap-2"><i className="h-3 w-3 rounded-sm bg-brand" />Atual</span></div>
-          </div>
-          <div className="mt-6 flex">
-            <div className="flex h-[200px] flex-col justify-between pr-4 text-[11px] text-muted">{["1.000k L", "750k L", "500k L", "250k L", "0 L"].map((l) => <span key={l}>{l}</span>)}</div>
-            <div className="flex-1 border-b border-l border-line">
-              <div className="flex h-[200px] items-end justify-around">
-                {months.map((m, i) => (
-                  <div key={m} className="flex items-end gap-1">
-                    <div className="w-[21px] rounded-t-sm bg-slate-400" style={{ height: `${antes[i] / 5}px` }} />
-                    <div className="w-[21px] rounded-t-sm bg-brand" style={{ height: `${atual[i] / 5}px` }} />
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-around pt-2 text-xs font-semibold">{months.map((m) => <span key={m}>{m}</span>)}</div>
-            </div>
-          </div>
+          <h3 className="h-display text-lg">Como a estimativa é calculada</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted">A perda detectada soma a vazão estimada de cada alerta pelo tempo até a resolução ou até o momento atual. O volume preservado é a diferença positiva entre a baseline mensal e as perdas estimadas; o valor financeiro usa a tarifa informada por metro cúbico. Esta métrica é indicativa, não uma medição de faturamento.</p>
+          {user?.role === "admin" && (
+            <form onSubmit={saveBaseline} className="mt-6 grid gap-4 border-t border-line pt-5 sm:grid-cols-3">
+              <label className="text-sm font-semibold">Localidade<input required maxLength={120} value={baseline.neighborhood} onChange={(event) => setBaseline({ ...baseline, neighborhood: event.target.value })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
+              <label className="text-sm font-semibold">Baseline de perdas (litros/mês)<input required type="number" min="0" step="any" value={baseline.monthly_loss_liters} onChange={(event) => setBaseline({ ...baseline, monthly_loss_liters: Number(event.target.value) })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
+              <label className="text-sm font-semibold">Tarifa (R$/m³)<input required type="number" min="0" step="any" value={baseline.tariff_per_m3} onChange={(event) => setBaseline({ ...baseline, tariff_per_m3: Number(event.target.value) })} className="mt-2 h-10 w-full rounded-lg border border-line px-3 font-normal" /></label>
+              <button className="rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark sm:col-span-3 sm:justify-self-end">Salvar baseline</button>
+            </form>
+          )}
         </section>
-
-        <section className="card flex flex-wrap items-center justify-between gap-4 px-6 py-5">
-          <div><h3 className="text-sm font-bold text-brand-dark">Gere seu relatório personalizado</h3><p className="mt-1 text-[13px] text-muted">Exporte estatísticas consolidadas e métricas hídricas em formato tabular ou apresentação executiva</p></div>
-          <div className="flex items-center gap-6">
-            <button className="text-[13px] font-semibold text-brand">Agendar envio automático</button>
-            <button className="flex h-10 items-center gap-2 rounded-lg bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-dark"><Download className="h-4 w-4" />Exportar PDF</button>
-          </div>
-        </section>
-      </div>
+      </main>
     </>
   );
 }
